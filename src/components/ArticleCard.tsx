@@ -2,10 +2,11 @@ import type { Article } from '../data/articles';
 
 interface ArticleCardProps {
   article: Article;
+  isPaid?: boolean;
   onReadMore: (article: Article) => void;
 }
 
-const ArticleCard = ({ article, onReadMore }: ArticleCardProps) => {
+const ArticleCard = ({ article, isPaid = false, onReadMore }: ArticleCardProps) => {
   return (
     <article className="group cursor-pointer border-b border-scroll-border pb-10">
       <div className="flex items-center gap-2 mb-3">
@@ -26,7 +27,7 @@ const ArticleCard = ({ article, onReadMore }: ArticleCardProps) => {
           onClick={() => onReadMore(article)}
           className="text-scroll-accent font-medium text-sm hover:underline"
         >
-          Read more ({article.price} SOmnia)
+          {isPaid ? 'Continue reading' : `Read more (${article.price} SOmnia)`}
         </button>
         <div className="flex gap-2">
           {article.tags.map((tag) => (
