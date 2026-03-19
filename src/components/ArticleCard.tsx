@@ -6,7 +6,7 @@ interface ArticleCardProps {
   onReadMore: (article: Article) => void;
 }
 
-const ArticleCard = ({ article, onReadMore }: ArticleCardProps) => {
+const ArticleCard = ({ article, isPaid = false, onReadMore }: ArticleCardProps) => {
   return (
     <article className="group cursor-pointer border-b border-scroll-border pb-10">
       <div className="flex items-center gap-2 mb-3">
