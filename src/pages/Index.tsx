@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Navbar from '../components/Navbar';
+import Navbar, { type ViewTab } from '../components/Navbar';
 import ArticleCard from '../components/ArticleCard';
 import PaymentModal from '../components/PaymentModal';
 import ArticleReader from '../components/ArticleReader';
@@ -7,7 +7,7 @@ import { MOCK_ARTICLES, MY_SUBSCRIBED, MY_PUBLISHED, type Article } from '../dat
 
 const Index = () => {
   const [isConnected, setIsConnected] = useState(false);
-  const [view, setView] = useState<'subscribed' | 'published'>('subscribed');
+  const [view, setView] = useState<ViewTab>('explore');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [readingArticle, setReadingArticle] = useState<Article | null>(null);
 
