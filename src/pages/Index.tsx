@@ -28,12 +28,18 @@ const Index = () => {
   if (isWriting) {
     return (
       <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
+        
         <Navbar
+          walletAddress={walletAddress}
+          onDisconnectWallet={disconnectWallet}
+          isConnecting={isConnecting}
+          setWallet={setWalletAddress}
           isConnected={isConnected}
           onConnectWallet={connectWallet}
           view={view}
           onViewChange={setView}
         />
+
         <ArticleEditor
           onBack={() => setIsWriting(false)}
           onPublish={(article) => {
@@ -50,6 +56,10 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
         <Navbar
+          walletAddress={walletAddress}
+          onDisconnectWallet={disconnectWallet}
+          isConnecting={isConnecting}
+          setWallet={setWalletAddress}
           isConnected={isConnected}
           onConnectWallet={connectWallet}
           view={view}
@@ -63,10 +73,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
       <Navbar
-        isConnected={isConnected}
-        onConnectWallet={connectWallet}
-        view={view}
-        onViewChange={setView}
+          walletAddress={walletAddress}
+          onDisconnectWallet={disconnectWallet}
+          isConnecting={isConnecting}
+          setWallet={setWalletAddress}
+          isConnected={isConnected}
+          onConnectWallet={connectWallet}
+          view={view}
+          onViewChange={setView}
       />
 
       <main className="max-w-article mx-auto px-6 py-12">
