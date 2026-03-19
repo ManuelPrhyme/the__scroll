@@ -59,7 +59,14 @@ const Index = () => {
             <ArticleCard
               key={article.id}
               article={article}
-              onReadMore={setSelectedArticle}
+              isPaid={view === 'subscribed'}
+              onReadMore={(a) => {
+                if (view === 'subscribed') {
+                  setReadingArticle(a);
+                } else {
+                  setSelectedArticle(a);
+                }
+              }}
             />
           ))}
         </div>

@@ -27,7 +27,7 @@ const ArticleCard = ({ article, isPaid = false, onReadMore }: ArticleCardProps) 
           onClick={() => onReadMore(article)}
           className="text-scroll-accent font-medium text-sm hover:underline"
         >
-          Read more ({article.price} SOmnia)
+          {isPaid ? 'Continue reading' : `Read more (${article.price} SOmnia)`}
         </button>
         <div className="flex gap-2">
           {article.tags.map((tag) => (
