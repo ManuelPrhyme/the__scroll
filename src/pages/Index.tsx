@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Navbar from '../components/Navbar';
+import Navbar, { type ViewTab } from '../components/Navbar';
 import ArticleCard from '../components/ArticleCard';
 import PaymentModal from '../components/PaymentModal';
 import ArticleReader from '../components/ArticleReader';
@@ -7,11 +7,13 @@ import { MOCK_ARTICLES, MY_SUBSCRIBED, MY_PUBLISHED, type Article } from '../dat
 
 const Index = () => {
   const [isConnected, setIsConnected] = useState(false);
-  const [view, setView] = useState<'subscribed' | 'published'>('subscribed');
+  const [view, setView] = useState<ViewTab>('explore');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [readingArticle, setReadingArticle] = useState<Article | null>(null);
 
   const articles = !isConnected
+    ? MOCK_ARTICLES
+    : view === 'explore'
     ? MOCK_ARTICLES
     : view === 'subscribed'
     ? MY_SUBSCRIBED
@@ -43,7 +45,7 @@ const Index = () => {
       <main className="max-w-article mx-auto px-6 py-12">
         <header className="mb-12">
           <h2 className="text-xs font-bold uppercase tracking-widest text-scroll-muted mb-4">
-            {!isConnected ? 'Explore' : view === 'subscribed' ? 'Your Feed' : 'Your Archive'}
+            {!isConnected ? 'Explore' : view === 'explore' ? 'All Articles' : view === 'subscribed' ? 'Paid Articles' : 'Your Articles'}
           </h2>
           {!isConnected && (
             <p className="font-serif text-scroll-muted text-lg">

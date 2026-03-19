@@ -1,11 +1,17 @@
-import { useState } from 'react';
+export type ViewTab = 'explore' | 'subscribed' | 'my-articles';
 
 interface NavbarProps {
   isConnected: boolean;
   onConnect: () => void;
-  view: 'subscribed' | 'published';
-  onViewChange: (view: 'subscribed' | 'published') => void;
+  view: ViewTab;
+  onViewChange: (view: ViewTab) => void;
 }
+
+const tabs: { key: ViewTab; label: string }[] = [
+  { key: 'explore', label: 'Explore' },
+  { key: 'subscribed', label: 'Subscribed' },
+  { key: 'my-articles', label: 'My Articles' },
+];
 
 const Navbar = ({ isConnected, onConnect, view, onViewChange }: NavbarProps) => {
   return (
@@ -15,22 +21,17 @@ const Navbar = ({ isConnected, onConnect, view, onViewChange }: NavbarProps) => 
         <div className="flex items-center gap-8">
           {isConnected && (
             <div className="flex gap-6 text-sm font-medium">
-              <button
-                onClick={() => onViewChange('subscribed')}
-                className={`transition-colors duration-200 ${
-                  view === 'subscribed' ? 'text-scroll-fg' : 'text-scroll-muted hover:text-scroll-fg'
-                }`}
-              >
-                Subscribed
-              </button>
-              <button
-                onClick={() => onViewChange('published')}
-                className={`transition-colors duration-200 ${
-                  view === 'published' ? 'text-scroll-fg' : 'text-scroll-muted hover:text-scroll-fg'
-                }`}
-              >
-                My Publications
-              </button>
+              {tabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => onViewChange(tab.key)}
+                  className={`transition-colors duration-200 ${
+                    view === tab.key ? 'text-scroll-fg' : 'text-scroll-muted hover:text-scroll-fg'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
           )}
           <button
