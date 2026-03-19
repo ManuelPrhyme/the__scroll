@@ -7,6 +7,28 @@ interface PaymentModalProps {
   onPay: (article: Article) => void;
 }
 
+// const Anvil = defineChain({
+//     id:31338,
+//     name: "Anvil",
+//     nativeCurrency:{
+//       name:'ether',
+//       decimals:'18',
+//       symbol:'ETH'
+//     },
+//     rpcUrls:{
+//       default:
+//         {http:['http://127.0.0.1:8545']
+//         } 
+//     }
+
+//   })
+
+//   const walletClient = createWalletClient({
+//     chain:Anvil,
+//     transport:http(),
+//     account: walletAddress as `0x${string}`
+//   })
+
 const PaymentModal = ({ article, onClose, onPay }: PaymentModalProps) => {
   const [isPaying, setIsPaying] = useState(false);
   const [paid, setPaid] = useState(false);
@@ -18,6 +40,33 @@ const PaymentModal = ({ article, onClose, onPay }: PaymentModalProps) => {
       setPaid(true);
     }, 1500);
   };
+
+  // const handlePay = async () => {
+  //   if (!selectedArticle) return;
+  //   setUnlockedIds((prev) => new Set(prev).add(selectedArticle.id));
+  //   setShowPayment(false);
+
+  //   const txHash = await walletClient.writeContract({
+  //     abi: Abi,
+  //     address:"0x4EEba27a210EcEb864F40e20C2262F3eD4d9694c",
+  //     functionName:"purchaseArticle",
+  //     args:[1],
+  //     account:walletAddress,
+  //     value:parseEther(selectedArticle.price.toFixed(3))
+  //   })
+
+  //   const receipt = await walletClient.waitForTransactionReceipt({hash:txHash})
+
+  //     toast.success(`Transaction Complete ${receipt.logs}..${receipt.to}`)
+    
+
+  //   toast.success("Article unlocked", {
+  //     description: `You paid ${selectedArticle.price.toFixed(1)} SOMNIA to ${selectedArticle.author}`,
+  //   });
+
+  //   setShowArticle(true);
+    
+  // };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
