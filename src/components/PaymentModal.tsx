@@ -33,7 +33,7 @@ const PaymentModal = ({ article, onClose, onPay }: PaymentModalProps) => {
 
             <div className="border-t border-b border-scroll-border py-6 mb-8 text-center">
               <p className="text-4xl font-serif font-bold">{article.price}</p>
-              <p className="text-sm text-scroll-muted mt-1">SOmnia Tokens</p>
+              <p className="text-md text-scroll-muted mt-1">STT</p>
             </div>
 
             <div className="flex gap-3">
