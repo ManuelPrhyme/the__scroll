@@ -13,6 +13,8 @@ const Index = () => {
 
   const articles = !isConnected
     ? MOCK_ARTICLES
+    : view === 'explore'
+    ? MOCK_ARTICLES
     : view === 'subscribed'
     ? MY_SUBSCRIBED
     : MY_PUBLISHED;
