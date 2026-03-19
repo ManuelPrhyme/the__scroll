@@ -2,6 +2,7 @@ import type { Article } from '../data/articles';
 
 interface ArticleCardProps {
   article: Article;
+  isPaid?: boolean;
   onReadMore: (article: Article) => void;
 }
 
