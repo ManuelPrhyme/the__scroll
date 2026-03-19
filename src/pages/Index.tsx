@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Navbar, { type ViewTab } from '../components/Navbar';
 import ArticleCard from '../components/ArticleCard';
+import ArticleEditor from '../components/ArticleEditor';
 import PaymentModal from '../components/PaymentModal';
 import ArticleReader from '../components/ArticleReader';
 import { MOCK_ARTICLES, MY_SUBSCRIBED, MY_PUBLISHED, type Article } from '../data/articles';
@@ -10,14 +11,37 @@ const Index = () => {
   const [view, setView] = useState<ViewTab>('explore');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [readingArticle, setReadingArticle] = useState<Article | null>(null);
+  const [isWriting, setIsWriting] = useState(false);
+  const [userArticles, setUserArticles] = useState<Article[]>(MY_PUBLISHED);
 
   const articles = !isConnected
     ? MOCK_ARTICLES
     : view === 'explore'
-    ? MOCK_ARTICLES
+    ? [...userArticles.filter((a) => !MOCK_ARTICLES.some((m) => m.id === a.id)), ...MOCK_ARTICLES]
     : view === 'subscribed'
     ? MY_SUBSCRIBED
-    : MY_PUBLISHED;
+    : userArticles;
+
+  if (isWriting) {
+    return (
+      <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
+        <Navbar
+          isConnected={isConnected}
+          onConnect={() => setIsConnected(!isConnected)}
+          view={view}
+          onViewChange={setView}
+        />
+        <ArticleEditor
+          onBack={() => setIsWriting(false)}
+          onPublish={(article) => {
+            setUserArticles((prev) => [article, ...prev]);
+            setIsWriting(false);
+            setView('my-articles');
+          }}
+        />
+      </div>
+    );
+  }
 
   if (readingArticle) {
     return (
@@ -43,14 +67,24 @@ const Index = () => {
       />
 
       <main className="max-w-article mx-auto px-6 py-12">
-        <header className="mb-12">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-scroll-muted mb-4">
-            {!isConnected ? 'Explore' : view === 'explore' ? 'All Articles' : view === 'subscribed' ? 'Paid Articles' : 'Your Articles'}
-          </h2>
-          {!isConnected && (
-            <p className="font-serif text-scroll-muted text-lg">
-              The Scroll is a place for ideas. Connect your wallet to begin.
-            </p>
+        <header className="mb-12 flex items-center justify-between">
+          <div>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-scroll-muted mb-4">
+              {!isConnected ? 'Explore' : view === 'explore' ? 'All Articles' : view === 'subscribed' ? 'Paid Articles' : 'Your Articles'}
+            </h2>
+            {!isConnected && (
+              <p className="font-serif text-scroll-muted text-lg">
+                The Scroll is a place for ideas. Connect your wallet to begin.
+              </p>
+            )}
+          </div>
+          {isConnected && view === 'my-articles' && (
+            <button
+              onClick={() => setIsWriting(true)}
+              className="bg-scroll-accent text-white px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              + Write Article
+            </button>
           )}
         </header>
 
