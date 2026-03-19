@@ -45,7 +45,7 @@ const Index = () => {
       <main className="max-w-article mx-auto px-6 py-12">
         <header className="mb-12">
           <h2 className="text-xs font-bold uppercase tracking-widest text-scroll-muted mb-4">
-            {!isConnected ? 'Explore' : view === 'subscribed' ? 'Your Feed' : 'Your Archive'}
+            {!isConnected ? 'Explore' : view === 'explore' ? 'All Articles' : view === 'subscribed' ? 'Paid Articles' : 'Your Articles'}
           </h2>
           {!isConnected && (
             <p className="font-serif text-scroll-muted text-lg">
