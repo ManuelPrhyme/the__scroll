@@ -15,7 +15,7 @@ const Index = () => {
   const [isWriting, setIsWriting] = useState(false);
   const [userArticles, setUserArticles] = useState<Article[]>(MY_PUBLISHED);
 
-  const { walletAddress, isConnecting, connectWallet, disconnectWallet, setWalletAddress } = useWallet();
+  const { walletAddress, isConnecting, connectWallet, disconnectWallet, setWalletAddress } = useWallet({setIsConnected});
 
   const articles = !isConnected
     ? MOCK_ARTICLES
@@ -29,6 +29,7 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
         
+        //Pass the prop to the context 
         <Navbar
           walletAddress={walletAddress}
           onDisconnectWallet={disconnectWallet}
@@ -38,6 +39,7 @@ const Index = () => {
           onConnectWallet={connectWallet}
           view={view}
           onViewChange={setView}
+          setIsConnected={setIsConnected}
         />
 
         <ArticleEditor
@@ -64,6 +66,7 @@ const Index = () => {
           onConnectWallet={connectWallet}
           view={view}
           onViewChange={setView}
+          setIsConnected={setIsConnected}
         />
         <ArticleReader article={readingArticle} onBack={() => setReadingArticle(null)} />
       </div>
@@ -81,6 +84,7 @@ const Index = () => {
           onConnectWallet={connectWallet}
           view={view}
           onViewChange={setView}
+          setIsConnected={setIsConnected}
       />
 
       <main className="max-w-article mx-auto px-6 py-12">
@@ -131,6 +135,8 @@ const Index = () => {
             setSelectedArticle(null);
             setReadingArticle(article);
           }}
+          walletAddress={walletAddress as `0x${string}`}
+          
         />
       )}
     </div>

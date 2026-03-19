@@ -11,7 +11,8 @@ declare global {
   }
 }
 
-export const useWallet = () => {
+
+export const useWallet = ({setIsConnected}) => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -31,6 +32,7 @@ export const useWallet = () => {
 
       if (accounts.length > 0) {
         setWalletAddress(accounts[0]);
+        setIsConnected(true)
         toast.success("Wallet connected", {
           description: `Connected to ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`,
         });
@@ -56,6 +58,7 @@ export const useWallet = () => {
   const disconnectWallet = useCallback(async () => {
     await window.ethereum.request({ method: "wallet_revokePermissions",params:[{eth_accounts:{}}] })
     setWalletAddress(null);
+    setIsConnected(false)
     toast.info("Wallet disconnected");
   }, []);
 
