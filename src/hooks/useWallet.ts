@@ -34,6 +34,8 @@ export const useWallet = () => {
         toast.success("Wallet connected", {
           description: `Connected to ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`,
         });
+
+        console.log("Seeit",accounts[0])
       }
     } catch (error: unknown) {
       const err = error as { code?: number; message?: string };
