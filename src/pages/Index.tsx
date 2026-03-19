@@ -5,6 +5,7 @@ import ArticleEditor from '../components/ArticleEditor';
 import PaymentModal from '../components/PaymentModal';
 import ArticleReader from '../components/ArticleReader';
 import { MOCK_ARTICLES, MY_SUBSCRIBED, MY_PUBLISHED, type Article } from '../data/articles';
+import { useWallet } from "@/hooks/useWallet";
 
 const Index = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -13,6 +14,8 @@ const Index = () => {
   const [readingArticle, setReadingArticle] = useState<Article | null>(null);
   const [isWriting, setIsWriting] = useState(false);
   const [userArticles, setUserArticles] = useState<Article[]>(MY_PUBLISHED);
+
+  const { walletAddress, isConnecting, connectWallet, disconnectWallet, setWalletAddress } = useWallet();
 
   const articles = !isConnected
     ? MOCK_ARTICLES
@@ -27,7 +30,7 @@ const Index = () => {
       <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
         <Navbar
           isConnected={isConnected}
-          onConnect={() => setIsConnected(!isConnected)}
+          onConnectWallet={connectWallet}
           view={view}
           onViewChange={setView}
         />
@@ -48,7 +51,7 @@ const Index = () => {
       <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
         <Navbar
           isConnected={isConnected}
-          onConnect={() => setIsConnected(!isConnected)}
+          onConnectWallet={connectWallet}
           view={view}
           onViewChange={setView}
         />
@@ -61,7 +64,7 @@ const Index = () => {
     <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
       <Navbar
         isConnected={isConnected}
-        onConnect={() => setIsConnected(!isConnected)}
+        onConnectWallet={connectWallet}
         view={view}
         onViewChange={setView}
       />
