@@ -55,20 +55,26 @@ const Index = () => {
         </header>
 
         <div className="space-y-12">
-          {articles.map((article) => (
-            <ArticleCard
-              key={article.id}
-              article={article}
-              isPaid={view === 'subscribed' || view === 'my-articles'}
-              onReadMore={(a) => {
-                if (view === 'subscribed' || view === 'my-articles') {
-                  setReadingArticle(a);
-                } else {
-                  setSelectedArticle(a);
-                }
-              }}
-            />
-          ))}
+          {articles.map((article) => {
+            const isOwned = isConnected && (
+              MY_SUBSCRIBED.some(a => a.id === article.id) ||
+              MY_PUBLISHED.some(a => a.id === article.id)
+            );
+            return (
+              <ArticleCard
+                key={article.id}
+                article={article}
+                isPaid={isOwned}
+                onReadMore={(a) => {
+                  if (isOwned) {
+                    setReadingArticle(a);
+                  } else {
+                    setSelectedArticle(a);
+                  }
+                }}
+              />
+            );
+          })}
         </div>
       </main>
 
