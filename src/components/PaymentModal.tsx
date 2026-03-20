@@ -74,25 +74,25 @@ const Anvil = defineChain({
     transport:http()  
   })
 
-  const somniaReactSDK = new SDK({
-    public:publicClient,
-    wallet:walletClient
-  })
+  // const somniaReactSDK = new SDK({
+  //   public:publicClient,
+  //   wallet:walletClient
+  // })
 
   const emitter_handler = "" as `0x${string}`
   const event_PurchaseComplete_Topic0 = keccak256(toHex(""))
 
-  const initParams: WebsocketSubscriptionInitParams = {
-    ethCalls:[{
-      to:emitter_handler,
-      data:
-    }],
-    eventContractSources:[emitter_handler],
-    topicOverrides:[event_PurchaseComplete_Topic0],
-    onData:(subCallback: SubscriptionCallback)=>{
+  // const initParams: WebsocketSubscriptionInitParams = {
+  //   ethCalls:[{
+  //     to:emitter_handler,
+  //     data:
+  //   }],
+  //   eventContractSources:[emitter_handler],
+  //   topicOverrides:[event_PurchaseComplete_Topic0],
+  //   onData:(subCallback: SubscriptionCallback)=>{
 
-    }
-  }
+  //   }
+  // }
 
   const solidity_Subscription: SoliditySubscriptionData = {
     emitter:emitter_handler,
