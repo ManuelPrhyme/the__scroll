@@ -1,7 +1,22 @@
 import { useState } from 'react';
 import type { Article } from '../data/articles';
-import {http, createWalletClient, defineChain, parseEther, createPublicClient, custom } from 'viem';
+
+import {
+  http, createWalletClient, defineChain, 
+  parseEther, createPublicClient, custom,
+  keccak256,toHex,
+  zeroHash,parseGwei
+} from 'viem';
+
+import { privateKeyToAccount } from 'viem/accounts';
 import {Abi} from './contractABI.tsx';
+import {
+  type WebsocketSubscriptionInitParams, 
+  type SubscriptionCallback,
+  type SoliditySubscriptionData,
+  SDK
+} from '@somnia-chain/reactivity'
+
 
 interface PaymentModalProps {
   article: Article;
@@ -11,23 +26,24 @@ interface PaymentModalProps {
 
 }
 
-https://dream-rpc.somnia.network
-wss://dream-rpc.somnia.network/ws"
-
 const SomniaTestnet = defineChain({
-    id:31337,
-    name: "Anvil",
+    id:50312,
+    name: "Somnia Testnet",
     nativeCurrency:{
-      name:'ETH',
+      name:'STT',
       decimals:18,
-      symbol:'ETH'
+      symbol:'STT'
     },
     rpcUrls:{
       default:
-        {http:['http://127.0.0.1:8545']
-        } 
+        {http:['https://dream-rpc.somnia.network'],
+        webSocket:['wss://dream-rpc.somnia.network/ws']
+        },
+      public:{
+        http:['https://dream-rpc.somnia.network'],
+        webSocket:['wss://dream-rpc.somnia.network/ws']
+      } 
     }
-
   })
 
 const Anvil = defineChain({
@@ -46,20 +62,53 @@ const Anvil = defineChain({
 
   })
 
+  const account = !Anvil ? privateKeyToAccount(import.meta.env.VITE_PRIVATE_KEY) : undefined 
+  const walletClient = createWalletClient({
+    account,
+    chain:Anvil || SomniaTestnet,
+    transport: account ? http() : custom(window.ethereum)
+  })
+
+  const publicClient = createPublicClient({
+    chain: Anvil || SomniaTestnet,
+    transport:http()  
+  })
+
+  const somniaReactSDK = new SDK({
+    public:publicClient,
+    wallet:walletClient
+  })
+
+  const emitter_handler = "" as `0x${string}`
+  const event_PurchaseComplete_Topic0 = keccak256(toHex(""))
+
+  const initParams: WebsocketSubscriptionInitParams = {
+    ethCalls:[{
+      to:emitter_handler,
+      data:
+    }],
+    eventContractSources:[emitter_handler],
+    topicOverrides:[event_PurchaseComplete_Topic0],
+    onData:(subCallback: SubscriptionCallback)=>{
+
+    }
+  }
+
+  const solidity_Subscription: SoliditySubscriptionData = {
+    emitter:emitter_handler,
+    eventTopics:[event_PurchaseComplete_Topic0,zeroHash,zeroHash,zeroHash],
+    handlerContractAddress:emitter_handler,
+    priorityFeePerGas:parseGwei('5'),
+    maxFeePerGas:parseGwei('15'),
+    gasLimit:3_000_000n,
+    isGuaranteed:true,
+    isCoalesced:false
+  }
+
 
 const PaymentModal = ({ article, onClose, onPay, walletAddress }: PaymentModalProps) => {
   const [isPaying, setIsPaying] = useState(false);
   const [paid, setPaid] = useState(false);
-
-  const walletClient = createWalletClient({
-    chain:Anvil,
-    transport:custom(window.ethereum),
-  })
-
-  const publicClient = createPublicClient({
-    chain: Anvil,
-    transport:http()  
-  })
 
   //I need to add the id of the article to the unlockedIds from the state onchain
   const handlePay = async () => {
@@ -127,7 +176,7 @@ const PaymentModal = ({ article, onClose, onPay, walletAddress }: PaymentModalPr
 
             <div className="border-t border-b border-scroll-border py-6 mb-8 text-center">
               <p className="text-4xl font-serif font-bold">{article.price}</p>
-              <p className="text-md text-scroll-muted mt-1">Somnia Tokens</p>
+              <p className="text-md text-scroll-muted mt-1">Somnia Tokens {Value}</p>
             </div>
 
             <div className="flex gap-3">
