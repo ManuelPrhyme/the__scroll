@@ -12,6 +12,7 @@ interface PaymentModalProps {
 }
 
 https://dream-rpc.somnia.network
+wss://dream-rpc.somnia.network/ws"
 
 const SomniaTestnet = defineChain({
     id:31337,
