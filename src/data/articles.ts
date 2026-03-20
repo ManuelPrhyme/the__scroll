@@ -8,6 +8,7 @@ export interface Article {
   tags: string[];
   price: number;
   fullContent: string;
+  address: `0x${string}`
 }
 
 export const MOCK_ARTICLES: Article[] = [

@@ -4,8 +4,9 @@ import ArticleCard from '../components/ArticleCard';
 import ArticleEditor from '../components/ArticleEditor';
 import PaymentModal from '../components/PaymentModal';
 import ArticleReader from '../components/ArticleReader';
-import { MOCK_ARTICLES, MY_SUBSCRIBED, MY_PUBLISHED, type Article } from '../data/articles';
+import { MOCK_ARTICLES, MY_SUBSCRIBED, type Article } from '../data/articles';
 import { useWallet } from "@/hooks/useWallet";
+import { useArticles } from "@/hooks/useArticles";
 
 const Index = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -13,7 +14,7 @@ const Index = () => {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [readingArticle, setReadingArticle] = useState<Article | null>(null);
   const [isWriting, setIsWriting] = useState(false);
-  const [userArticles, setUserArticles] = useState<Article[]>(MY_PUBLISHED);
+  const { userArticles, addArticle } = useArticles();
 
   const { walletAddress, isConnecting, connectWallet, disconnectWallet, setWalletAddress } = useWallet({setIsConnected});
 
@@ -45,7 +46,7 @@ const Index = () => {
         <ArticleEditor
           onBack={() => setIsWriting(false)}
           onPublish={(article) => {
-            setUserArticles((prev) => [article, ...prev]);
+            addArticle(article);
             setIsWriting(false);
             setView('my-articles');
           }}

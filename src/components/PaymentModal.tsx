@@ -11,6 +11,24 @@ interface PaymentModalProps {
 
 }
 
+https://dream-rpc.somnia.network
+
+const SomniaTestnet = defineChain({
+    id:31337,
+    name: "Anvil",
+    nativeCurrency:{
+      name:'ETH',
+      decimals:18,
+      symbol:'ETH'
+    },
+    rpcUrls:{
+      default:
+        {http:['http://127.0.0.1:8545']
+        } 
+    }
+
+  })
+
 const Anvil = defineChain({
     id:31337,
     name: "Anvil",
@@ -48,9 +66,9 @@ const PaymentModal = ({ article, onClose, onPay, walletAddress }: PaymentModalPr
     setIsPaying(true);
 
     const txHash = await walletClient.writeContract({
-      abi: Abi as [],
+      abi: Abi,
       address:"0x4EEba27a210EcEb864F40e20C2262F3eD4d9694c" as string,
-      functionName:"purchaseArticle" as string,
+      functionName:"purchaseArticle",
       args:[2],
       account:walletAddress,
       value:parseEther('5')
