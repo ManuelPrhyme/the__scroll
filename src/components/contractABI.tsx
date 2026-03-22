@@ -55,46 +55,29 @@ export const Abi = [
 		"type": "event"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "PLATFORM_FEE_PERCENT",
+		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "metadataURI",
-				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "paymentAddress",
-				"type": "address"
-			}
-		],
-		"name": "createArticle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "articleId",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "purchaseArticle",
-		"outputs": [],
-		"stateMutability": "payable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "withdrawPlatformFees",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"name": "articleCounter",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -126,11 +109,6 @@ export const Abi = [
 				"internalType": "uint256",
 				"name": "price",
 				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "metadataURI",
-				"type": "string"
 			},
 			{
 				"internalType": "uint256",
@@ -169,6 +147,24 @@ export const Abi = [
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "paymentAddress",
+				"type": "address"
+			}
+		],
+		"name": "createArticle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "articleId",
 				"type": "uint256"
 			}
@@ -196,11 +192,6 @@ export const Abi = [
 						"internalType": "uint256",
 						"name": "price",
 						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "metadataURI",
-						"type": "string"
 					},
 					{
 						"internalType": "uint256",
@@ -280,32 +271,6 @@ export const Abi = [
 	},
 	{
 		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "PLATFORM_FEE_PERCENT",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "platformBalance",
 		"outputs": [
 			{
@@ -315,6 +280,19 @@ export const Abi = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "articleId",
+				"type": "uint256"
+			}
+		],
+		"name": "purchaseArticle",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -367,15 +345,9 @@ export const Abi = [
 	},
 	{
 		"inputs": [],
-		"name": "totalArticles",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
+		"name": "withdrawPlatformFees",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

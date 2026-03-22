@@ -7,16 +7,21 @@ import ArticleReader from '../components/ArticleReader';
 import { MOCK_ARTICLES, MY_SUBSCRIBED, type Article } from '../data/articles';
 import { useWallet } from "@/hooks/useWallet";
 import { useArticles } from "@/hooks/useArticles";
+import {} from '../components/chain_SDK_Config.tsx'
+import {Abi} from '../components/contractABI.tsx' 
 
 const Index = () => {
+
+
   const [isConnected, setIsConnected] = useState(false);
   const [view, setView] = useState<ViewTab>('explore');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [readingArticle, setReadingArticle] = useState<Article | null>(null);
   const [isWriting, setIsWriting] = useState(false);
-  const { userArticles, addArticle } = useArticles();
+   const { walletAddress, isConnecting, connectWallet, disconnectWallet, setWalletAddress } = useWallet({setIsConnected});
+  const { userArticles, addArticle } = useArticles({walletAddress});
 
-  const { walletAddress, isConnecting, connectWallet, disconnectWallet, setWalletAddress } = useWallet({setIsConnected});
+  
 
   const articles = !isConnected
     ? MOCK_ARTICLES
@@ -30,7 +35,7 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-scroll-bg text-scroll-fg font-sans antialiased">
         
-        //Pass the prop to the context 
+        {/* //Pass the prop to the context  */}
         <Navbar
           walletAddress={walletAddress}
           onDisconnectWallet={disconnectWallet}
@@ -131,6 +136,7 @@ const Index = () => {
       {selectedArticle && (
         <PaymentModal
           article={selectedArticle}
+          ABI={Abi as any[]}
           onClose={() => setSelectedArticle(null)}
           onPay={(article) => {
             setSelectedArticle(null);

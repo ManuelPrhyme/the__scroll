@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { Article } from '../data/articles';
+import { public_Client_Http, emitter_handler } from './chain_SDK_Config';
+import { Abi } from './contractABI';
 
 interface ArticleEditorProps {
   onBack: () => void;
@@ -43,15 +45,27 @@ const ArticleEditor = ({ onBack, onPublish }: ArticleEditorProps) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePublish = () => {
+  const handlePublish =  async () => {
     if (!validate()) return;
 
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
     const snippet = trimmedContent.length > 200 ? trimmedContent.slice(0, 200) + '…' : trimmedContent;
 
+    let articleCount = await public_Client_Http.readContract({
+      abi: Abi,
+      address: emitter_handler,
+      functionName: 'articleCounter',
+    })
+
+    console.log("This is the actual articleCount: ", articleCount)
+
+    let article_Counter_Number = Number(articleCount)
+
+        console.log("This is the actual articleCounter converted: ", article_Counter_Number)
+
     const article: Article = {
-      id: crypto.randomUUID(),
+      id: ++article_Counter_Number,
       title: trimmedTitle,
       snippet,
       author: 'You',
@@ -60,7 +74,7 @@ const ArticleEditor = ({ onBack, onPublish }: ArticleEditorProps) => {
       tags: selectedTags,
       price: Number(price),
       fullContent: trimmedContent,
-      address: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+      subscriberCount: 0
     };
 
     onPublish(article);
@@ -142,7 +156,7 @@ const ArticleEditor = ({ onBack, onPublish }: ArticleEditorProps) => {
       {/* Price */}
       <div className="mb-10">
         <label className="block text-xs font-bold uppercase tracking-widest text-scroll-muted mb-2">
-          Price (SOmnia)
+          Price (Somnia)
         </label>
         <input
           type="number"

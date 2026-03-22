@@ -1,20 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Article } from '../data/articles';
-
-import {
-  http, createWalletClient, defineChain, 
-  parseEther, createPublicClient, custom,
+import {wallet_Client, public_Client, somniaReactSDK, emitter_handler} from './chain_SDK_Config'
+import { 
+  parseEther,
   keccak256,toHex,
-  zeroHash,parseGwei
+  zeroHash,parseGwei,
+  encodeFunctionData,
 } from 'viem';
 
-import { privateKeyToAccount } from 'viem/accounts';
 import {Abi} from './contractABI.tsx';
+
 import {
   type WebsocketSubscriptionInitParams, 
   type SubscriptionCallback,
   type SoliditySubscriptionData,
-  SDK
 } from '@somnia-chain/reactivity'
 
 
@@ -22,77 +21,13 @@ interface PaymentModalProps {
   article: Article;
   onClose: () => void;
   onPay: (article: Article) => void;
-  walletAddress:`0x${string}`
+  walletAddress:`0x${string}`;
+  ABI:string[];
 
 }
 
-const SomniaTestnet = defineChain({
-    id:50312,
-    name: "Somnia Testnet",
-    nativeCurrency:{
-      name:'STT',
-      decimals:18,
-      symbol:'STT'
-    },
-    rpcUrls:{
-      default:
-        {http:['https://dream-rpc.somnia.network'],
-        webSocket:['wss://dream-rpc.somnia.network/ws']
-        },
-      public:{
-        http:['https://dream-rpc.somnia.network'],
-        webSocket:['wss://dream-rpc.somnia.network/ws']
-      } 
-    }
-  })
-
-const Anvil = defineChain({
-    id:31337,
-    name: "Anvil",
-    nativeCurrency:{
-      name:'ETH',
-      decimals:18,
-      symbol:'ETH'
-    },
-    rpcUrls:{
-      default:
-        {http:['http://127.0.0.1:8545']
-        } 
-    }
-
-  })
-
-  const account = !Anvil ? privateKeyToAccount(import.meta.env.VITE_PRIVATE_KEY) : undefined 
-  const walletClient = createWalletClient({
-    account,
-    chain:Anvil || SomniaTestnet,
-    transport: account ? http() : custom(window.ethereum)
-  })
-
-  const publicClient = createPublicClient({
-    chain: Anvil || SomniaTestnet,
-    transport:http()  
-  })
-
-  // const somniaReactSDK = new SDK({
-  //   public:publicClient,
-  //   wallet:walletClient
-  // })
-
-  const emitter_handler = "" as `0x${string}`
-  const event_PurchaseComplete_Topic0 = keccak256(toHex(""))
-
-  // const initParams: WebsocketSubscriptionInitParams = {
-  //   ethCalls:[{
-  //     to:emitter_handler,
-  //     data:
-  //   }],
-  //   eventContractSources:[emitter_handler],
-  //   topicOverrides:[event_PurchaseComplete_Topic0],
-  //   onData:(subCallback: SubscriptionCallback)=>{
-
-  //   }
-  // }
+  const event_PurchaseComplete_Topic0 = keccak256(toHex("ArticlePurchased(uint256,address,uint256)"))
+  const even_PublishComplete_Topic0 = keccak256(toHex("ArticleCreated(uint256,address,uint256)"))
 
   const solidity_Subscription: SoliditySubscriptionData = {
     emitter:emitter_handler,
@@ -105,62 +40,71 @@ const Anvil = defineChain({
     isCoalesced:false
   }
 
-
-const PaymentModal = ({ article, onClose, onPay, walletAddress }: PaymentModalProps) => {
+const PaymentModal = ({ article, onClose, onPay, walletAddress, ABI }: PaymentModalProps) => {
   const [isPaying, setIsPaying] = useState(false);
   const [paid, setPaid] = useState(false);
 
+   useEffect(()=>{
+
+    const initParams: WebsocketSubscriptionInitParams = {
+    ethCalls:[{
+      to:emitter_handler,
+      data:encodeFunctionData({
+        abi:ABI,
+        functionName:"getArticle",
+        args:[article.id]
+      })
+    },
+    // {
+    //   to:emitter_handler,
+    //   data:encodeFunctionData({
+    //     abi:ABI, // ABI Unknown
+    //     functionName:"getArticlePrice",
+    //     args:[article.id]
+    //   })
+    // }
+  ],
+    eventContractSources:[emitter_handler],
+    topicOverrides:[event_PurchaseComplete_Topic0],
+    onData:(subCallback: SubscriptionCallback)=>{
+
+    }
+  }
+
+  const subscriber =  async () => {
+      const subscription = await somniaReactSDK.subscribe(initParams)
+      console.log("The subscription: ", subscription)
+  }
+
+  subscriber()
+
+  console.log("This is the article ID:", article.id);
+
+   },[])
   //I need to add the id of the article to the unlockedIds from the state onchain
   const handlePay = async () => {
     if (!article) return;
     setIsPaying(true);
 
-    const txHash = await walletClient.writeContract({
+    const txHash = await wallet_Client.writeContract({
       abi: Abi,
-      address:"0x4EEba27a210EcEb864F40e20C2262F3eD4d9694c" as string,
+      address:emitter_handler,
       functionName:"purchaseArticle",
-      args:[2],
+      args:[article.id],
       account:walletAddress,
-      value:parseEther('5')
+      value:parseEther(`${article.price}`)
     })
 
-    const receipt = await publicClient.waitForTransactionReceipt({hash:txHash})
+    const receipt = await public_Client.waitForTransactionReceipt({hash:txHash})
 
     console.log(`Transaction Complete ${receipt.logs}..${receipt.to}`)
     // toast.success(`Transaction Complete ${receipt.logs}..${receipt.to}`)
 
       setIsPaying(false);
       setPaid(true);
-  
 
   };
 
-  // const handlePay = async () => {
-  //   *if (!selectedArticle) return;
-  //   setUnlockedIds((prev) => new Set(prev).add(selectedArticle.id));
-  //   setShowPayment(false);
-
-  //   const txHash = await walletClient.writeContract({
-  //     abi: Abi,
-  //     address:"0x4EEba27a210EcEb864F40e20C2262F3eD4d9694c",
-  //     functionName:"purchaseArticle",
-  //     args:[1],
-  //     account:walletAddress,
-  //     value:parseEther(selectedArticle.price.toFixed(3))
-  //   })
-
-  //   const receipt = await walletClient.waitForTransactionReceipt({hash:txHash})
-
-  //     toast.success(`Transaction Complete ${receipt.logs}..${receipt.to}`)
-    
-
-  //   toast.success("Article unlocked", {
-  //     description: `You paid ${selectedArticle.price.toFixed(1)} SOMNIA to ${selectedArticle.author}`,
-  //   });
-
-  //   setShowArticle(true);
-    
-  // };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -176,7 +120,7 @@ const PaymentModal = ({ article, onClose, onPay, walletAddress }: PaymentModalPr
 
             <div className="border-t border-b border-scroll-border py-6 mb-8 text-center">
               <p className="text-4xl font-serif font-bold">{article.price}</p>
-              <p className="text-md text-scroll-muted mt-1">Somnia Tokens {Value}</p>
+              <p className="text-md text-scroll-muted mt-1">Somnia Tokens</p>
             </div>
 
             <div className="flex gap-3">

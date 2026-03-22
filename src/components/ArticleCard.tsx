@@ -22,23 +22,30 @@ const ArticleCard = ({ article, isPaid = false, onReadMore }: ArticleCardProps) 
       <p className="font-serif text-scroll-muted leading-relaxed mb-4 line-clamp-3 text-lg">
         {article.snippet}
       </p>
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => onReadMore(article)}
-          className="text-scroll-accent font-medium text-sm hover:underline"
-        >
-          {isPaid ? 'Continue reading' : `Read more (${article.price} SOmnia)`}
-        </button>
-        <div className="flex gap-2">
-          {article.tags.map((tag) => (
-            <span
-              key={tag}
-              className="bg-scroll-surface px-2 py-1 text-[10px] uppercase font-bold tracking-wider text-scroll-muted"
-            >
-              {tag}
-            </span>
-          ))}
+      <div className="flex flex-col items-start gap-2 mb-4">
+        <div className="flex items-center justify-between w-full">
+          <button
+            onClick={() => onReadMore(article)}
+            className="text-scroll-accent font-medium text-sm hover:underline"
+          >
+            {isPaid ? 'Continue reading' : `Read more (${article.price} SOmnia)`}
+          </button>
+          <div className="flex gap-2">
+            {article.tags.map((tag) => (
+              <span
+                key={tag}
+                className="bg-scroll-surface px-2 py-1 text-[10px] uppercase font-bold tracking-wider text-scroll-muted"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
+        {article.subscriberCount > 0 && (
+          <span className="text-sm font-bold text-scroll-muted">
+            {article.subscriberCount} subscribers
+          </span>
+        )}
       </div>
     </article>
   );
