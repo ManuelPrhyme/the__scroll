@@ -4,7 +4,7 @@ import ArticleCard from '../components/ArticleCard';
 import ArticleEditor from '../components/ArticleEditor';
 import PaymentModal from '../components/PaymentModal';
 import ArticleReader from '../components/ArticleReader';
-import { MOCK_ARTICLES, MY_SUBSCRIBED, type Article } from '../data/articles';
+import { MOCK_ARTICLES, type Article } from '../data/articles';
 import { useWallet } from "@/hooks/useWallet";
 import { useArticles } from "@/hooks/useArticles";
 import {} from '../components/chain_SDK_Config.tsx'
@@ -19,17 +19,19 @@ const Index = () => {
   const [readingArticle, setReadingArticle] = useState<Article | null>(null);
   const [isWriting, setIsWriting] = useState(false);
    const { walletAddress, isConnecting, connectWallet, disconnectWallet, setWalletAddress } = useWallet({setIsConnected});
-  const { userArticles, addArticle } = useArticles({walletAddress});
+  const { userArticles, addArticle, subscribedIds, authoredIds, incrementSubscriberCount } = useArticles({walletAddress});
 
   
+
+  const allArticles = [...userArticles.filter((a) => !MOCK_ARTICLES.some((m) => m.id === a.id)), ...MOCK_ARTICLES];
 
   const articles = !isConnected
     ? MOCK_ARTICLES
     : view === 'explore'
-    ? [...userArticles.filter((a) => !MOCK_ARTICLES.some((m) => m.id === a.id)), ...MOCK_ARTICLES]
+    ? allArticles.filter((a) => !subscribedIds.includes(a.id) && !authoredIds.includes(a.id))
     : view === 'subscribed'
-    ? MY_SUBSCRIBED
-    : userArticles;
+    ? allArticles.filter((a) => subscribedIds.includes(a.id))
+    : allArticles.filter((a) => a.authorAddress?.toLowerCase() === walletAddress?.toLowerCase());
 
   if (isWriting) {
     return (
@@ -139,6 +141,7 @@ const Index = () => {
           ABI={Abi as any[]}
           onClose={() => setSelectedArticle(null)}
           onPay={(article) => {
+            if (article.id) incrementSubscriberCount(article.id);
             setSelectedArticle(null);
             setReadingArticle(article);
           }}
