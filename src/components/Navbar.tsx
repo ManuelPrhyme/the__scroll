@@ -25,7 +25,8 @@ const Navbar = ({ view, onViewChange, walletAddress, onConnectWallet, onDisconne
   
   useEffect(() => {
     const checkWallet = async () => {
-          const wallet = await window.ethereum.request({ method: "eth_accounts" })
+      if (!window.ethereum) return;
+      const wallet = await window.ethereum.request({ method: "eth_accounts" })
 
         setWallet(wallet[0] || null)
         
