@@ -1,24 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract OurOwn {
-
-    event Tracked(address owner, bool status, uint16 value);
-
-    function tracker() public {
-        emit Tracked(address(uint160(uint256(keccak256(abi.encode(3456))))), true, 345);
-    }
-
-    function name() public pure returns(string memory){
-        return "Emmanuel Bagoole";
-    }
-
-    function dob() public pure returns(uint256){
-        return 1997;
-    }
-}
-
-
 contract TheScroll {
 
     address private immutable owner;
